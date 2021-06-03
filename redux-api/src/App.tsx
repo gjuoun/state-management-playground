@@ -1,43 +1,52 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import './style.css'
 import styled from 'styled-components'
 import classNames from 'classnames';
+import { useSelector, useDispatch } from 'react-redux'
+import { decrement, increment, selectCount } from './redux/counter.reducer'
+import { updateColor, updateCustomText, updateTextSize } from './redux/theme.reducer'
+import { useAppDispatch, useAppSelector } from './hooks';
 
-interface Theme {
-  color: string,
-  textSize: string
-}
+
+// function App() {
+//   const count = useAppSelector((state) => state.counter.value)
+//   const dispatch = useAppDispatch()
+
+//   return (
+//     <div>
+//       <div>
+//         <button
+//           aria-label="Increment value"
+//           onClick={() => dispatch(increment())}
+//         >
+//           Increment
+//         </button>
+//         <span>{count}</span>
+//         <button
+//           aria-label="Decrement value"
+//           onClick={() => dispatch(decrement())}
+//         >
+//           Decrement
+//         </button>
+//       </div>
+//     </div>
+//   )
+// }
 
 
-interface ContextIntf {
-  theme: Theme,
-  setTheme: React.Dispatch<React.SetStateAction<Theme>>,
-  customText: string,
-}
-
-const MyContext = React.createContext<ContextIntf>({
-  theme: {
-    color: 'blue',
-    textSize: 'sm'
-  },
-  setTheme: () => { },
-  customText: 'my text'
-})
+/* ------------------------------- new section ------------------------------ */
 
 
 function App() {
 
-  const [theme, setTheme] = React.useState<Theme>({
-    color: 'blue',
-    textSize: 'lg'
-  })
   return (
-    <MyContext.Provider value={{ theme, setTheme, customText: "my text" }}>
+    <>
       <MyButton></MyButton>
       <MyText></MyText>
       <MyOptions></MyOptions>
       <MyCustomComponent />
-    </MyContext.Provider>
+      <MyInput></MyInput>
+    </>
   );
 }
 
@@ -45,28 +54,39 @@ function App() {
 export default App;
 
 
+function MyInput() {
+  console.log("render custom input");
+
+  const customText = useAppSelector((state) => state.theme.customText)
+  const dispatch = useAppDispatch()
+
+  return <input type="text" value={customText}
+    onChange={(e) => {
+      dispatch(updateCustomText(e.target.value))
+    }}
+  ></input>
+}
+
+
 function MyCustomComponent() {
-  const { customText } = React.useContext(MyContext)
+  const customText = useAppSelector((state) => state.theme.customText)
 
   console.log("render custom component");
-
-
-  return (<p>{customText}</p>)
+  return (<p>Custom-text: {customText}</p>)
 }
 
 
 function MyOptions() {
+  const dispatch = useAppDispatch()
+
   console.log("render options");
-
-
-  const { setTheme } = React.useContext(MyContext)
 
   const selectOptions = ['xs', 'sm', 'base', 'lg']
 
 
   return <select id="textSize" name="textSize"
     onChange={(e) => {
-      setTheme((theme) => ({ ...theme, textSize: e.target.value }))
+      dispatch(updateTextSize(e.target.value))
     }}
   >
     {selectOptions.map((option) => (
@@ -78,10 +98,9 @@ function MyOptions() {
 
 
 function MyText() {
+  const textSize = useAppSelector((state) => state.theme.textSize)
 
   console.log("render text");
-
-  const { theme: { textSize }, setTheme } = React.useContext(MyContext)
 
   const textSizeClass = classNames({
     'text-xs': textSize === 'xs',
@@ -102,8 +121,9 @@ function MyText() {
 
 function MyButton() {
   console.log("render button");
+  const color = useAppSelector((state) => state.theme.color)
+  const dispatch = useAppDispatch()
 
-  const { theme: { color }, setTheme } = React.useContext(MyContext)
 
   const buttonColor = classNames({
     'bg-green-500 hover:bg-green-700': color === 'green',
@@ -112,12 +132,7 @@ function MyButton() {
 
   return <button className={`${buttonColor} py-2 px-4 font-semibold rounded-lg shadow-md text-white`}
     onClick={() => {
-      setTheme((theme) => {
-        if (theme.color === 'blue')
-          return { ...theme, color: 'green' }
-        else
-          return { ...theme, color: 'blue' }
-      })
+      dispatch(updateColor())
     }}
 
   >Haha</button>
