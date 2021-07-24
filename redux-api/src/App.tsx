@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { decrement, increment, selectCount } from './redux/counter.reducer'
 import { updateColor, updateCustomText, updateTextSize } from './redux/theme.reducer'
 import { useAppDispatch, useAppSelector } from './hooks';
-
+import Todos from './components/Todos';
 
 // function App() {
 //   const count = useAppSelector((state) => state.counter.value)
@@ -46,6 +46,7 @@ function App() {
       <MyOptions></MyOptions>
       <MyCustomComponent />
       <MyInput></MyInput>
+      <Todos></Todos>
     </>
   );
 }

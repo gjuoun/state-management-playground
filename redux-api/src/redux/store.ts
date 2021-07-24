@@ -1,14 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/dist/query'
 import counterReducer from './counter.reducer'
 import themeReducer from './theme.reducer'
+import { todoApi } from './todo.api'
 
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
-    theme: themeReducer
+    theme: themeReducer,
+    [todoApi.reducerPath]: todoApi.reducer,
   },
+  middleware: (getDefaultMiddleware) => (
+    getDefaultMiddleware().concat(todoApi.middleware)
+  )
 })
+
+setupListeners(store.dispatch)
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

@@ -3,7 +3,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 export interface ThemeState {
   color: string,
   textSize: string,
-  customText: string
+  customText: string,
+  childTheme?: {
+    color: string,
+    textSize: string,
+    customText: string
+  }
 }
 
 const initialState: ThemeState = {
