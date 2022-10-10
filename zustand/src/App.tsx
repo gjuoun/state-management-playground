@@ -17,36 +17,36 @@ const useStore = create<State>( (set)=> ({
 
 
 export const App = () => {
-  const {count, increment, decrement} = useStore();
+  // const { increment, decrement} = useStore();
 
   console.log("---parent render---")
-  useEffect(()=> {
-    console.log("parent: count changed", count);
-  },[count])
+  // useEffect(()=> {
+  //   console.log("parent: count changed", count);
+  // },[count])
 
   return <div>
     hello parent
 
-<button onClick={increment}> increment</button>
-<button onClick={decrement}> decrement</button>
-    <ChildApp></ChildApp>
+{/* <button onClick={increment}> increment</button>
+<button onClick={decrement}> decrement</button> */}
+    <ChildApp num={1}></ChildApp>
+    <ChildApp num={2}></ChildApp>
   </div>;
 };
 
 
-const ChildApp = ()=> {
-  // const {increment, decrement, tft} = useStore();
-  const {} = useStore();
+const ChildApp = ({num}: {num: number})=> {
+  const {increment, decrement} = useStore();
 
-  console.log("---child render---")
+
+  console.log("---child render---", num)
 
   // useEffect(()=> {
   //   console.log("child: count changed", count);
   // },[count])
   
-  return <div>child
-{/* 
-<button onClick={increment}> increment</button>
-<button onClick={decrement}> decrement</button> */}
-  </div>;
+  return <div>child {num}
+  <button onClick={increment}> increment</button>
+  <button onClick={decrement}> decrement</button>
+  </div>
 }
